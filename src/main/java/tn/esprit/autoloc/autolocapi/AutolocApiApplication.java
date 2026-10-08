@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import tn.esprit.autoloc.autolocapi.domain.CategorieVehicule;
 import tn.esprit.autoloc.autolocapi.domain.StatutVehicule;
 import tn.esprit.autoloc.autolocapi.domain.Vehicule;
-import tn.esprit.autoloc.autolocapi.repository.VehiculeRepository;
+import tn.esprit.autoloc.autolocapi.repository.IVehiculeRepository;
 
 import java.math.BigDecimal;
 
@@ -20,7 +20,7 @@ public class AutolocApiApplication {
     }
 
     @Bean
-    CommandLineRunner initDatabase(VehiculeRepository vehiculeRepository) {
+    CommandLineRunner initDatabase(IVehiculeRepository vehiculeRepository) {
         return args -> {
 
             if (vehiculeRepository.count() == 0) {
