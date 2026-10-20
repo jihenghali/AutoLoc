@@ -23,18 +23,3 @@
 | Imports generiques dans `Contrat`. | Les imports explicites rendent les annotations de cascade et d'association plus lisibles. | Remplacement de `jakarta.persistence.*` par les imports JPA utilises. |
 | Imports generiques dans `Vehicule`. | Les imports explicites evitent un import global dans une entite centrale du modele. | Remplacement de `jakarta.persistence.*` par les imports JPA utilises. |
 
-## Verification
-
-Commande executee :
-
-```bash
-./mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--spring.main.web-application-type=none"
-```
-
-Resultat observe :
-
-```text
-Found 9 JPA repository interfaces.
-```
-
-Remarque : l'analyse SonarQube for IDE doit etre lancee dans IntelliJ IDEA comme indique dans l'atelier.

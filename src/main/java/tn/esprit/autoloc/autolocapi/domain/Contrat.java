@@ -1,21 +1,15 @@
+
 package tn.esprit.autoloc.autolocapi.domain;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.List;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,8 +30,10 @@ public class Contrat {
     @JoinColumn(name = "reservation_id", unique = true)
     private Reservation reservation;
 
-    @OneToMany(mappedBy = "contrat",
+    @OneToMany(
+            mappedBy = "contrat",
             cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            orphanRemoval = true
+    )
     private List<Paiement> paiements;
 }
