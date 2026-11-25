@@ -1,5 +1,7 @@
 package tn.esprit.autoloc.autolocapi.exception;
 
+
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,5 +66,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleDataConflict() {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("message", "Les données ne respectent pas une contrainte de la base"));
+    }
+
+    @ExceptionHandler(AffectationConflictException.class)
+    public ResponseEntity<Map<String, String>> handleAffectationConflict(AffectationConflictException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", ex.getMessage()));
     }
 }

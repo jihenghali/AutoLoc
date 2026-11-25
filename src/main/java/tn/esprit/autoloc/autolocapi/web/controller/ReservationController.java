@@ -1,6 +1,10 @@
 
 package tn.esprit.autoloc.autolocapi.web.controller;
 
+import tn.esprit.autoloc.autolocapi.dto.ReservationResponseDTO;
+import tn.esprit.autoloc.autolocapi.dto.ReservationWithContratRequestDTO;
+import org.springframework.http.HttpStatus;
+
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -42,5 +46,18 @@ public class ReservationController {
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
         reservationService.deleteById(id);
+    }
+
+    @PutMapping("/{idReservation}/client")
+    public ReservationResponseDTO affecterReservationAClient(@PathVariable Long idReservation,
+                                                             @RequestParam String nom, @RequestParam String prenom) {
+        return reservationService.affecterReservationAClient(idReservation, nom, prenom);
+    }
+
+    @PostMapping("/avec-contrat")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReservationResponseDTO creerReservationEtContratAssocie(
+            @Valid @RequestBody ReservationWithContratRequestDTO requestDTO) {
+        return reservationService.creerReservationEtContratAssocie(requestDTO);
     }
 }

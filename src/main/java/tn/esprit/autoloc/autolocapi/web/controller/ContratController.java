@@ -1,6 +1,9 @@
 
 package tn.esprit.autoloc.autolocapi.web.controller;
 
+import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -40,5 +43,13 @@ public class ContratController {
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
         contratService.deleteById(id);
+    }
+
+    @PutMapping("/reservation")
+    public ContratDTO affecterContratAReservation(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateSignature,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDebut,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFin) {
+        return contratService.affecterContratAReservation(dateSignature, dateDebut, dateFin);
     }
 }

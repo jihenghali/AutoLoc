@@ -1,5 +1,7 @@
 package tn.esprit.autoloc.autolocapi.web.controller;
 
+
+
 import jakarta.validation.Valid;
 import java.util.List;
 
@@ -136,5 +138,17 @@ public class VehiculeController {
             @PathVariable Long id
     ) {
         vehiculeService.deleteById(id);
+    }
+
+    @PutMapping("/{idVehicule}/equipements/{idEquipement}")
+    public VehiculeDTO affecterVehiculeAEquipement(@PathVariable Long idVehicule,
+                                                  @PathVariable Long idEquipement) {
+        return vehiculeService.affecterVehiculeAEquipement(idVehicule, idEquipement);
+    }
+
+    @PutMapping("/maintenance")
+    public VehiculeDTO affecterMaintenanceAvehicule(@RequestParam String description,
+                                                    @RequestParam String immatriculation) {
+        return vehiculeService.affecterMaintenanceAvehicule(description, immatriculation);
     }
 }

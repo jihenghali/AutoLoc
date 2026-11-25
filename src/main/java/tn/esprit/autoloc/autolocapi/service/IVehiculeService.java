@@ -1,5 +1,7 @@
 package tn.esprit.autoloc.autolocapi.service;
 
+
+
 import java.util.List;
 import tn.esprit.autoloc.autolocapi.dto.VehiculeDTO;
 
@@ -14,4 +16,8 @@ public interface IVehiculeService {
     VehiculeDTO update(Long id, VehiculeDTO vehiculeDTO);
 
     void deleteById(Long id);
+
+    VehiculeDTO affecterVehiculeAEquipement(Long idVehicule, Long idEquipement);
+
+    VehiculeDTO affecterMaintenanceAvehicule(String description, String immatriculation);
 }

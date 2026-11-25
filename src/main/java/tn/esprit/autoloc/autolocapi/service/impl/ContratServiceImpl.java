@@ -1,6 +1,13 @@
 
 package tn.esprit.autoloc.autolocapi.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
+import static tn.esprit.autoloc.autolocapi.service.RechercheAffectation.resultatUnique;
+import java.time.LocalDate;
+import tn.esprit.autoloc.autolocapi.domain.Reservation;
+import tn.esprit.autoloc.autolocapi.repository.IReservationRepository;
+import tn.esprit.autoloc.autolocapi.exception.AffectationConflictException;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -20,6 +27,8 @@ public class ContratServiceImpl implements IContratService {
 
     private final IContratRepository contratRepository;
     private final ContratMapper contratMapper;
+
+    private final IReservationRepository reservationRepository;
 
     @Override
     public ContratDTO create(ContratDTO dto) {
@@ -88,5 +97,31 @@ public class ContratServiceImpl implements IContratService {
             throw new IllegalArgumentException(
                     "Le montant total doit être positif ou nul");
         }
+    }
+
+    @Override
+    @Transactional
+    public ContratDTO affecterContratAReservation(LocalDate dateSignature, LocalDate dateDebut, LocalDate dateFin) {
+        if (dateSignature == null || dateDebut == null || dateFin == null || dateFin.isBefore(dateDebut)) {
+            throw new IllegalArgumentException("Les dates sont obligatoires et la fin doit suivre le d?but");
+        }
+
+        Contrat contrat = resultatUnique(contratRepository.findTop2ByDateSignature(dateSignature),
+                "la date de signature du contrat");
+        Reservation reservation = resultatUnique(
+                reservationRepository.findTop2ByDateDebutAndDateFin(dateDebut, dateFin),
+                "les dates de la r?servation");
+
+        if (contrat.getReservation() != null) {
+            if (!contrat.getReservation().getIdReservation().equals(reservation.getIdReservation())) {
+                throw new AffectationConflictException("Le contrat est d?j? affect? ? une autre r?servation");
+            }
+        } else {
+            if (contratRepository.existsByReservationIdReservation(reservation.getIdReservation())) {
+                throw new AffectationConflictException("La r?servation poss?de d?j? un contrat");
+            }
+            contrat.setReservation(reservation);
+        }
+        return contratMapper.toDTO(contrat);
     }
 }

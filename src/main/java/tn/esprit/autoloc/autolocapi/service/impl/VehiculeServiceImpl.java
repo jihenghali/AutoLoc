@@ -1,5 +1,12 @@
 package tn.esprit.autoloc.autolocapi.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
+import static tn.esprit.autoloc.autolocapi.service.RechercheAffectation.resultatUnique;
+import tn.esprit.autoloc.autolocapi.domain.Equipement;
+import tn.esprit.autoloc.autolocapi.domain.Maintenance;
+import tn.esprit.autoloc.autolocapi.repository.IEquipementRepository;
+import tn.esprit.autoloc.autolocapi.repository.IMaintenanceRepository;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -19,6 +26,9 @@ public class VehiculeServiceImpl implements IVehiculeService {
 
     private final IVehiculeRepository vehiculeRepository;
     private final VehiculeMapper vehiculeMapper;
+
+    private final IEquipementRepository equipementRepository;
+    private final IMaintenanceRepository maintenanceRepository;
 
     @Override
     public VehiculeDTO create(VehiculeDTO dto) {
@@ -118,5 +128,34 @@ public class VehiculeServiceImpl implements IVehiculeService {
             throw new IllegalArgumentException(
                     "La catégorie et le statut sont obligatoires");
         }
+    }
+
+    @Override
+    @Transactional
+    public VehiculeDTO affecterVehiculeAEquipement(Long idVehicule, Long idEquipement) {
+        Vehicule vehicule = vehiculeRepository.findForUpdateByIdVehicule(idVehicule)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicule", idVehicule));
+        Equipement equipement = equipementRepository.findById(idEquipement)
+                .orElseThrow(() -> new ResourceNotFoundException("Equipement", idEquipement));
+
+        if (!vehicule.getEquipements().contains(equipement)) {
+            vehicule.getEquipements().add(equipement);
+        }
+        return vehiculeMapper.toDTO(vehicule);
+    }
+
+    @Override
+    @Transactional
+    public VehiculeDTO affecterMaintenanceAvehicule(String description, String immatriculation) {
+        if (description == null || description.isBlank() || immatriculation == null || immatriculation.isBlank()) {
+            throw new IllegalArgumentException("La description et l'immatriculation sont obligatoires");
+        }
+
+        Vehicule vehicule = vehiculeRepository.findByImmatriculation(immatriculation.trim())
+                .orElseThrow(() -> new ResourceNotFoundException("V?hicule introuvable pour cette immatriculation"));
+        Maintenance maintenance = resultatUnique(maintenanceRepository.findTop2ByDescription(description.trim()),
+                "la description de la maintenance");
+        maintenance.setVehicule(vehicule);
+        return vehiculeMapper.toDTO(vehicule);
     }
 }

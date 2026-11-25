@@ -1,5 +1,8 @@
 package tn.esprit.autoloc.autolocapi.mapper;
 
+import tn.esprit.autoloc.autolocapi.domain.Contrat;
+import tn.esprit.autoloc.autolocapi.dto.ReservationResponseDTO;
+
 import org.springframework.stereotype.Component;
 import tn.esprit.autoloc.autolocapi.domain.Client;
 import tn.esprit.autoloc.autolocapi.domain.Reservation;
@@ -41,5 +44,17 @@ public class ReservationMapper {
             entity.setClient(client);
         }
         return entity;
+    }
+
+    public ReservationResponseDTO toResponseDTO(Reservation reservation) {
+        return toResponseDTO(reservation, reservation.getContrat());
+    }
+
+    public ReservationResponseDTO toResponseDTO(Reservation reservation,
+                                                Contrat contrat) {
+        ReservationDTO dto = toDTO(reservation);
+        return new ReservationResponseDTO(dto.getIdReservation(), dto.getDateDebut(), dto.getDateFin(),
+                dto.getStatut(), dto.getClientId(), dto.getVehiculeId(),
+                contrat == null ? null : contrat.getIdContrat());
     }
 }
