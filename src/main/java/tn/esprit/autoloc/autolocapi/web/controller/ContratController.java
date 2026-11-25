@@ -1,11 +1,12 @@
 
 package tn.esprit.autoloc.autolocapi.web.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import tn.esprit.autoloc.autolocapi.domain.Contrat;
+import tn.esprit.autoloc.autolocapi.dto.ContratDTO;
 import tn.esprit.autoloc.autolocapi.service.IContratService;
 
 @RestController
@@ -16,23 +17,23 @@ public class ContratController {
     private final IContratService contratService;
 
     @PostMapping
-    public Contrat create(@RequestBody Contrat contrat) {
+    public ContratDTO create(@Valid @RequestBody ContratDTO contrat) {
         return contratService.create(contrat);
     }
 
     @GetMapping("/{id}")
-    public Contrat findById(@PathVariable Long id) {
+    public ContratDTO findById(@PathVariable Long id) {
         return contratService.findById(id);
     }
 
     @GetMapping
-    public List<Contrat> findAll() {
+    public List<ContratDTO> findAll() {
         return contratService.findAll();
     }
 
     @PutMapping("/{id}")
-    public Contrat update(@PathVariable Long id,
-                          @RequestBody Contrat contrat) {
+    public ContratDTO update(@PathVariable Long id,
+                          @Valid @RequestBody ContratDTO contrat) {
         return contratService.update(id, contrat);
     }
 

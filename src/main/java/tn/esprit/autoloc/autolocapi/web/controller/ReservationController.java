@@ -1,11 +1,12 @@
 
 package tn.esprit.autoloc.autolocapi.web.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import tn.esprit.autoloc.autolocapi.domain.Reservation;
+import tn.esprit.autoloc.autolocapi.dto.ReservationDTO;
 import tn.esprit.autoloc.autolocapi.service.IReservationService;
 
 @RestController
@@ -16,25 +17,25 @@ public class ReservationController {
     private final IReservationService reservationService;
 
     @PostMapping
-    public Reservation create(
-            @RequestBody Reservation reservation) {
+    public ReservationDTO create(
+            @Valid @RequestBody ReservationDTO reservation) {
         return reservationService.create(reservation);
     }
 
     @GetMapping("/{id}")
-    public Reservation findById(@PathVariable Long id) {
+    public ReservationDTO findById(@PathVariable Long id) {
         return reservationService.findById(id);
     }
 
     @GetMapping
-    public List<Reservation> findAll() {
+    public List<ReservationDTO> findAll() {
         return reservationService.findAll();
     }
 
     @PutMapping("/{id}")
-    public Reservation update(
+    public ReservationDTO update(
             @PathVariable Long id,
-            @RequestBody Reservation reservation) {
+            @Valid @RequestBody ReservationDTO reservation) {
         return reservationService.update(id, reservation);
     }
 

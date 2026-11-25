@@ -1,11 +1,12 @@
 
 package tn.esprit.autoloc.autolocapi.web.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import tn.esprit.autoloc.autolocapi.domain.Employe;
+import tn.esprit.autoloc.autolocapi.dto.EmployeDTO;
 import tn.esprit.autoloc.autolocapi.service.IEmployeService;
 
 @RestController
@@ -16,23 +17,23 @@ public class EmployeController {
     private final IEmployeService employeService;
 
     @PostMapping
-    public Employe create(@RequestBody Employe employe) {
+    public EmployeDTO create(@Valid @RequestBody EmployeDTO employe) {
         return employeService.create(employe);
     }
 
     @GetMapping("/{id}")
-    public Employe findById(@PathVariable Long id) {
+    public EmployeDTO findById(@PathVariable Long id) {
         return employeService.findById(id);
     }
 
     @GetMapping
-    public List<Employe> findAll() {
+    public List<EmployeDTO> findAll() {
         return employeService.findAll();
     }
 
     @PutMapping("/{id}")
-    public Employe update(@PathVariable Long id,
-                          @RequestBody Employe employe) {
+    public EmployeDTO update(@PathVariable Long id,
+                          @Valid @RequestBody EmployeDTO employe) {
         return employeService.update(id, employe);
     }
 

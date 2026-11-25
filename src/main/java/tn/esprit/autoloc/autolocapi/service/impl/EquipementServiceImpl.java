@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.autoloc.autolocapi.domain.Equipement;
+import tn.esprit.autoloc.autolocapi.dto.EquipementDTO;
+import tn.esprit.autoloc.autolocapi.mapper.EquipementMapper;
 import tn.esprit.autoloc.autolocapi.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.autolocapi.repository.IEquipementRepository;
 import tn.esprit.autoloc.autolocapi.service.IEquipementService;
@@ -16,9 +18,11 @@ import tn.esprit.autoloc.autolocapi.service.IEquipementService;
 public class EquipementServiceImpl implements IEquipementService {
 
     private final IEquipementRepository equipementRepository;
+    private final EquipementMapper equipementMapper;
 
     @Override
-    public Equipement create(Equipement equipement) {
+    public EquipementDTO create(EquipementDTO dto) {
+        Equipement equipement = equipementMapper.toEntity(dto);
 
         if (equipement.getIdEquipement() != null) {
             throw new IllegalArgumentException(
@@ -27,31 +31,38 @@ public class EquipementServiceImpl implements IEquipementService {
 
         validerEquipement(equipement);
 
-        return equipementRepository.save(equipement);
+        return equipementMapper.toDTO(equipementRepository.save(equipement));
     }
 
     @Override
-    public Equipement findById(Long id) {
+    public EquipementDTO findById(Long id) {
+        return equipementMapper.toDTO(findEntityById(id));
+    }
+
+    private Equipement findEntityById(Long id) {
         return equipementRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Equipement", id));
     }
 
     @Override
-    public List<Equipement> findAll() {
-        return equipementRepository.findAll();
+    public List<EquipementDTO> findAll() {
+        return equipementRepository.findAll().stream()
+                .map(equipementMapper::toDTO)
+                .toList();
     }
 
     @Override
-    public Equipement update(Long id, Equipement equipement) {
+    public EquipementDTO update(Long id, EquipementDTO dto) {
+        Equipement equipement = equipementMapper.toEntity(dto);
 
-        Equipement existant = findById(id);
+        Equipement existant = findEntityById(id);
 
         validerEquipement(equipement);
 
         existant.setLibelle(equipement.getLibelle());
 
-        return equipementRepository.save(existant);
+        return equipementMapper.toDTO(equipementRepository.save(existant));
     }
 
     @Override

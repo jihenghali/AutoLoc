@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.autoloc.autolocapi.domain.Employe;
+import tn.esprit.autoloc.autolocapi.dto.EmployeDTO;
+import tn.esprit.autoloc.autolocapi.mapper.EmployeMapper;
 import tn.esprit.autoloc.autolocapi.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.autolocapi.repository.IEmployeRepository;
 import tn.esprit.autoloc.autolocapi.service.IEmployeService;
@@ -15,9 +17,11 @@ import tn.esprit.autoloc.autolocapi.service.IEmployeService;
 public class EmployeServiceImpl implements IEmployeService {
 
     private final IEmployeRepository employeRepository;
+    private final EmployeMapper employeMapper;
 
     @Override
-    public Employe create(Employe employe) {
+    public EmployeDTO create(EmployeDTO dto) {
+        Employe employe = employeMapper.toEntity(dto);
 
         if (employe.getIdEmploye() != null) {
             throw new IllegalArgumentException(
@@ -26,25 +30,32 @@ public class EmployeServiceImpl implements IEmployeService {
 
         validerEmploye(employe);
 
-        return employeRepository.save(employe);
+        return employeMapper.toDTO(employeRepository.save(employe));
     }
 
     @Override
-    public Employe findById(Long id) {
+    public EmployeDTO findById(Long id) {
+        return employeMapper.toDTO(findEntityById(id));
+    }
+
+    private Employe findEntityById(Long id) {
         return employeRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Employe", id));
     }
 
     @Override
-    public List<Employe> findAll() {
-        return employeRepository.findAll();
+    public List<EmployeDTO> findAll() {
+        return employeRepository.findAll().stream()
+                .map(employeMapper::toDTO)
+                .toList();
     }
 
     @Override
-    public Employe update(Long id, Employe employe) {
+    public EmployeDTO update(Long id, EmployeDTO dto) {
+        Employe employe = employeMapper.toEntity(dto);
 
-        Employe existant = findById(id);
+        Employe existant = findEntityById(id);
 
         validerEmploye(employe);
 
@@ -52,7 +63,7 @@ public class EmployeServiceImpl implements IEmployeService {
         existant.setPrenom(employe.getPrenom());
         existant.setRole(employe.getRole());
 
-        return employeRepository.save(existant);
+        return employeMapper.toDTO(employeRepository.save(existant));
     }
 
     @Override

@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.autoloc.autolocapi.domain.Contrat;
+import tn.esprit.autoloc.autolocapi.dto.ContratDTO;
+import tn.esprit.autoloc.autolocapi.mapper.ContratMapper;
 import tn.esprit.autoloc.autolocapi.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.autolocapi.repository.IContratRepository;
 import tn.esprit.autoloc.autolocapi.service.IContratService;
@@ -17,9 +19,11 @@ import tn.esprit.autoloc.autolocapi.service.IContratService;
 public class ContratServiceImpl implements IContratService {
 
     private final IContratRepository contratRepository;
+    private final ContratMapper contratMapper;
 
     @Override
-    public Contrat create(Contrat contrat) {
+    public ContratDTO create(ContratDTO dto) {
+        Contrat contrat = contratMapper.toEntity(dto);
 
         if (contrat.getIdContrat() != null) {
             throw new IllegalArgumentException(
@@ -28,11 +32,15 @@ public class ContratServiceImpl implements IContratService {
 
         validerContrat(contrat);
 
-        return contratRepository.save(contrat);
+        return contratMapper.toDTO(contratRepository.save(contrat));
     }
 
     @Override
-    public Contrat findById(Long id) {
+    public ContratDTO findById(Long id) {
+        return contratMapper.toDTO(findEntityById(id));
+    }
+
+    private Contrat findEntityById(Long id) {
 
         return contratRepository.findById(id)
                 .orElseThrow(() ->
@@ -40,15 +48,18 @@ public class ContratServiceImpl implements IContratService {
     }
 
     @Override
-    public List<Contrat> findAll() {
+    public List<ContratDTO> findAll() {
 
-        return contratRepository.findAll();
+        return contratRepository.findAll().stream()
+                .map(contratMapper::toDTO)
+                .toList();
     }
 
     @Override
-    public Contrat update(Long id, Contrat contrat) {
+    public ContratDTO update(Long id, ContratDTO dto) {
+        Contrat contrat = contratMapper.toEntity(dto);
 
-        Contrat existant = findById(id);
+        Contrat existant = findEntityById(id);
 
         validerContrat(contrat);
 
@@ -56,7 +67,7 @@ public class ContratServiceImpl implements IContratService {
         existant.setMontantTotal(contrat.getMontantTotal());
         existant.setValide(contrat.getValide());
 
-        return contratRepository.save(existant);
+        return contratMapper.toDTO(contratRepository.save(existant));
     }
 
     @Override

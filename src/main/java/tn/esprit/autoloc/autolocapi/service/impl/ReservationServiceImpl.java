@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.autoloc.autolocapi.domain.Reservation;
+import tn.esprit.autoloc.autolocapi.dto.ReservationDTO;
+import tn.esprit.autoloc.autolocapi.mapper.ReservationMapper;
 import tn.esprit.autoloc.autolocapi.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.autolocapi.repository.IReservationRepository;
 import tn.esprit.autoloc.autolocapi.service.IReservationService;
@@ -15,9 +17,11 @@ import tn.esprit.autoloc.autolocapi.service.IReservationService;
 public class ReservationServiceImpl implements IReservationService {
 
     private final IReservationRepository reservationRepository;
+    private final ReservationMapper reservationMapper;
 
     @Override
-    public Reservation create(Reservation reservation) {
+    public ReservationDTO create(ReservationDTO dto) {
+        Reservation reservation = reservationMapper.toEntity(dto);
 
         if (reservation.getIdReservation() != null) {
             throw new IllegalArgumentException(
@@ -26,25 +30,32 @@ public class ReservationServiceImpl implements IReservationService {
 
         validerReservation(reservation);
 
-        return reservationRepository.save(reservation);
+        return reservationMapper.toDTO(reservationRepository.save(reservation));
     }
 
     @Override
-    public Reservation findById(Long id) {
+    public ReservationDTO findById(Long id) {
+        return reservationMapper.toDTO(findEntityById(id));
+    }
+
+    private Reservation findEntityById(Long id) {
         return reservationRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Reservation", id));
     }
 
     @Override
-    public List<Reservation> findAll() {
-        return reservationRepository.findAll();
+    public List<ReservationDTO> findAll() {
+        return reservationRepository.findAll().stream()
+                .map(reservationMapper::toDTO)
+                .toList();
     }
 
     @Override
-    public Reservation update(Long id, Reservation reservation) {
+    public ReservationDTO update(Long id, ReservationDTO dto) {
+        Reservation reservation = reservationMapper.toEntity(dto);
 
-        Reservation existante = findById(id);
+        Reservation existante = findEntityById(id);
 
         validerReservation(reservation);
 
@@ -52,7 +63,7 @@ public class ReservationServiceImpl implements IReservationService {
         existante.setDateFin(reservation.getDateFin());
         existante.setStatut(reservation.getStatut());
 
-        return reservationRepository.save(existante);
+        return reservationMapper.toDTO(reservationRepository.save(existante));
     }
 
     @Override

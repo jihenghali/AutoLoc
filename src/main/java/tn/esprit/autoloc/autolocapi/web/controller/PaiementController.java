@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import tn.esprit.autoloc.autolocapi.domain.Paiement;
+import tn.esprit.autoloc.autolocapi.dto.PaiementDTO;
 import tn.esprit.autoloc.autolocapi.service.IPaiementService;
 
 @RestController
@@ -16,12 +16,12 @@ public class PaiementController {
     private final IPaiementService paiementService;
 
     @GetMapping("/{id}")
-    public Paiement findById(@PathVariable Long id) {
+    public PaiementDTO findById(@PathVariable Long id) {
         return paiementService.findById(id);
     }
 
     @GetMapping
-    public List<Paiement> findAll() {
+    public List<PaiementDTO> findAll() {
         return paiementService.findAll();
     }
 }

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.autoloc.autolocapi.domain.Maintenance;
+import tn.esprit.autoloc.autolocapi.dto.MaintenanceDTO;
+import tn.esprit.autoloc.autolocapi.mapper.MaintenanceMapper;
 import tn.esprit.autoloc.autolocapi.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.autolocapi.repository.IMaintenanceRepository;
 import tn.esprit.autoloc.autolocapi.service.IMaintenanceService;
@@ -16,9 +18,11 @@ import tn.esprit.autoloc.autolocapi.service.IMaintenanceService;
 public class MaintenanceServiceImpl implements IMaintenanceService {
 
     private final IMaintenanceRepository maintenanceRepository;
+    private final MaintenanceMapper maintenanceMapper;
 
     @Override
-    public Maintenance create(Maintenance maintenance) {
+    public MaintenanceDTO create(MaintenanceDTO dto) {
+        Maintenance maintenance = maintenanceMapper.toEntity(dto);
 
         if (maintenance.getIdMaintenance() != null) {
             throw new IllegalArgumentException(
@@ -27,11 +31,15 @@ public class MaintenanceServiceImpl implements IMaintenanceService {
 
         validerMaintenance(maintenance);
 
-        return maintenanceRepository.save(maintenance);
+        return maintenanceMapper.toDTO(maintenanceRepository.save(maintenance));
     }
 
     @Override
-    public Maintenance findById(Long id) {
+    public MaintenanceDTO findById(Long id) {
+        return maintenanceMapper.toDTO(findEntityById(id));
+    }
+
+    private Maintenance findEntityById(Long id) {
 
         return maintenanceRepository.findById(id)
                 .orElseThrow(() ->
@@ -39,15 +47,18 @@ public class MaintenanceServiceImpl implements IMaintenanceService {
     }
 
     @Override
-    public List<Maintenance> findAll() {
+    public List<MaintenanceDTO> findAll() {
 
-        return maintenanceRepository.findAll();
+        return maintenanceRepository.findAll().stream()
+                .map(maintenanceMapper::toDTO)
+                .toList();
     }
 
     @Override
-    public Maintenance update(Long id, Maintenance maintenance) {
+    public MaintenanceDTO update(Long id, MaintenanceDTO dto) {
+        Maintenance maintenance = maintenanceMapper.toEntity(dto);
 
-        Maintenance existante = findById(id);
+        Maintenance existante = findEntityById(id);
 
         validerMaintenance(maintenance);
 
@@ -55,7 +66,7 @@ public class MaintenanceServiceImpl implements IMaintenanceService {
         existante.setDateFin(maintenance.getDateFin());
         existante.setDescription(maintenance.getDescription());
 
-        return maintenanceRepository.save(existante);
+        return maintenanceMapper.toDTO(maintenanceRepository.save(existante));
     }
 
     @Override

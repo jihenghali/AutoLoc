@@ -1,6 +1,7 @@
 
 package tn.esprit.autoloc.autolocapi.web.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import tn.esprit.autoloc.autolocapi.domain.Client;
+import tn.esprit.autoloc.autolocapi.dto.ClientDTO;
 import tn.esprit.autoloc.autolocapi.service.IClientService;
 
 @RestController
@@ -33,7 +34,7 @@ public class ClientController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201",
-                    description = "Client créé avec succès"
+                    description = "ClientDTO créé avec succès"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -42,7 +43,7 @@ public class ClientController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Client create(@RequestBody Client client) {
+    public ClientDTO create(@Valid @RequestBody ClientDTO client) {
         return clientService.create(client);
     }
 
@@ -51,15 +52,15 @@ public class ClientController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Client trouvé"
+                    description = "ClientDTO trouvé"
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Client introuvable"
+                    description = "ClientDTO introuvable"
             )
     })
     @GetMapping("/{id}")
-    public Client findById(
+    public ClientDTO findById(
             @Parameter(description = "Identifiant du client")
             @PathVariable Long id
     ) {
@@ -73,7 +74,7 @@ public class ClientController {
             description = "Liste des clients récupérée"
     )
     @GetMapping
-    public List<Client> findAll() {
+    public List<ClientDTO> findAll() {
         return clientService.findAll();
     }
 
@@ -82,7 +83,7 @@ public class ClientController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Client modifié avec succès"
+                    description = "ClientDTO modifié avec succès"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -90,14 +91,14 @@ public class ClientController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Client introuvable"
+                    description = "ClientDTO introuvable"
             )
     })
     @PutMapping("/{id}")
-    public Client update(
+    public ClientDTO update(
             @Parameter(description = "Identifiant du client")
             @PathVariable Long id,
-            @RequestBody Client client
+            @Valid @RequestBody ClientDTO client
     ) {
         return clientService.update(id, client);
     }
@@ -107,11 +108,11 @@ public class ClientController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "204",
-                    description = "Client supprimé avec succès"
+                    description = "ClientDTO supprimé avec succès"
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Client introuvable"
+                    description = "ClientDTO introuvable"
             )
     })
     @DeleteMapping("/{id}")

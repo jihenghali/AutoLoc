@@ -2,17 +2,17 @@
 package tn.esprit.autoloc.autolocapi.service;
 
 import java.util.List;
-import tn.esprit.autoloc.autolocapi.domain.Equipement;
+import tn.esprit.autoloc.autolocapi.dto.EquipementDTO;
 
 public interface IEquipementService {
 
-    Equipement create(Equipement equipement);
+    EquipementDTO create(EquipementDTO equipement);
 
-    Equipement findById(Long id);
+    EquipementDTO findById(Long id);
 
-    List<Equipement> findAll();
+    List<EquipementDTO> findAll();
 
-    Equipement update(Long id, Equipement equipement);
+    EquipementDTO update(Long id, EquipementDTO equipement);
 
     void deleteById(Long id);
 }

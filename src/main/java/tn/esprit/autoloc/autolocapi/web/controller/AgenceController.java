@@ -1,6 +1,7 @@
 
 package tn.esprit.autoloc.autolocapi.web.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import tn.esprit.autoloc.autolocapi.domain.Agence;
+import tn.esprit.autoloc.autolocapi.dto.AgenceDTO;
 import tn.esprit.autoloc.autolocapi.service.IAgenceService;
 
 @RestController
@@ -36,7 +37,7 @@ public class AgenceController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201",
-                    description = "Agence créée avec succès"
+                    description = "AgenceDTO créée avec succès"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -45,7 +46,7 @@ public class AgenceController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Agence create(@RequestBody Agence agence) {
+    public AgenceDTO create(@Valid @RequestBody AgenceDTO agence) {
         return agenceService.create(agence);
     }
 
@@ -57,15 +58,15 @@ public class AgenceController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Agence trouvée"
+                    description = "AgenceDTO trouvée"
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Agence introuvable"
+                    description = "AgenceDTO introuvable"
             )
     })
     @GetMapping("/{id}")
-    public Agence findById(
+    public AgenceDTO findById(
             @Parameter(description = "Identifiant de l'agence")
             @PathVariable Long id
     ) {
@@ -82,7 +83,7 @@ public class AgenceController {
             description = "Liste des agences récupérée"
     )
     @GetMapping
-    public List<Agence> findAll() {
+    public List<AgenceDTO> findAll() {
         return agenceService.findAll();
     }
 
@@ -94,7 +95,7 @@ public class AgenceController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Agence modifiée avec succès"
+                    description = "AgenceDTO modifiée avec succès"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -102,14 +103,14 @@ public class AgenceController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Agence introuvable"
+                    description = "AgenceDTO introuvable"
             )
     })
     @PutMapping("/{id}")
-    public Agence update(
+    public AgenceDTO update(
             @Parameter(description = "Identifiant de l'agence")
             @PathVariable Long id,
-            @RequestBody Agence agence
+            @Valid @RequestBody AgenceDTO agence
     ) {
         return agenceService.update(id, agence);
     }
@@ -122,11 +123,11 @@ public class AgenceController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "204",
-                    description = "Agence supprimée avec succès"
+                    description = "AgenceDTO supprimée avec succès"
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Agence introuvable"
+                    description = "AgenceDTO introuvable"
             )
     })
     @DeleteMapping("/{id}")

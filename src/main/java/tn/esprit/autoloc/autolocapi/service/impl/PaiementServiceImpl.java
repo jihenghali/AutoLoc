@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.autoloc.autolocapi.domain.Paiement;
+import tn.esprit.autoloc.autolocapi.dto.PaiementDTO;
+import tn.esprit.autoloc.autolocapi.mapper.PaiementMapper;
 import tn.esprit.autoloc.autolocapi.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.autolocapi.repository.IPaiementRepository;
 import tn.esprit.autoloc.autolocapi.service.IPaiementService;
@@ -16,9 +18,14 @@ import tn.esprit.autoloc.autolocapi.service.IPaiementService;
 public class PaiementServiceImpl implements IPaiementService {
 
     private final IPaiementRepository paiementRepository;
+    private final PaiementMapper paiementMapper;
 
     @Override
-    public Paiement findById(Long id) {
+    public PaiementDTO findById(Long id) {
+        return paiementMapper.toDTO(findEntityById(id));
+    }
+
+    private Paiement findEntityById(Long id) {
 
         return paiementRepository.findById(id)
                 .orElseThrow(() ->
@@ -26,8 +33,10 @@ public class PaiementServiceImpl implements IPaiementService {
     }
 
     @Override
-    public List<Paiement> findAll() {
+    public List<PaiementDTO> findAll() {
 
-        return paiementRepository.findAll();
+        return paiementRepository.findAll().stream()
+                .map(paiementMapper::toDTO)
+                .toList();
     }
 }

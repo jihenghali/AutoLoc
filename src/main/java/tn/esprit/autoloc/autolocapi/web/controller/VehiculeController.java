@@ -1,6 +1,6 @@
-
 package tn.esprit.autoloc.autolocapi.web.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import tn.esprit.autoloc.autolocapi.domain.Vehicule;
+import tn.esprit.autoloc.autolocapi.dto.VehiculeDTO;
 import tn.esprit.autoloc.autolocapi.service.IVehiculeService;
 
 @RestController
@@ -45,7 +45,7 @@ public class VehiculeController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Vehicule create(@RequestBody Vehicule vehicule) {
+    public VehiculeDTO create(@Valid @RequestBody VehiculeDTO vehicule) {
         return vehiculeService.create(vehicule);
     }
 
@@ -65,7 +65,7 @@ public class VehiculeController {
             )
     })
     @GetMapping("/{id}")
-    public Vehicule findById(
+    public VehiculeDTO findById(
             @Parameter(description = "Identifiant du véhicule")
             @PathVariable Long id
     ) {
@@ -82,7 +82,7 @@ public class VehiculeController {
             description = "Liste des véhicules récupérée avec succès"
     )
     @GetMapping
-    public List<Vehicule> findAll() {
+    public List<VehiculeDTO> findAll() {
         return vehiculeService.findAll();
     }
 
@@ -106,10 +106,10 @@ public class VehiculeController {
             )
     })
     @PutMapping("/{id}")
-    public Vehicule update(
+    public VehiculeDTO update(
             @Parameter(description = "Identifiant du véhicule")
             @PathVariable Long id,
-            @RequestBody Vehicule vehicule
+            @Valid @RequestBody VehiculeDTO vehicule
     ) {
         return vehiculeService.update(id, vehicule);
     }

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.autoloc.autolocapi.domain.Client;
+import tn.esprit.autoloc.autolocapi.dto.ClientDTO;
+import tn.esprit.autoloc.autolocapi.mapper.ClientMapper;
 import tn.esprit.autoloc.autolocapi.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.autolocapi.repository.IClientRepository;
 import tn.esprit.autoloc.autolocapi.service.IClientService;
@@ -16,9 +18,11 @@ import tn.esprit.autoloc.autolocapi.service.IClientService;
 public class ClientServiceImpl implements IClientService {
 
     private final IClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
     @Override
-    public Client create(Client client) {
+    public ClientDTO create(ClientDTO dto) {
+        Client client = clientMapper.toEntity(dto);
 
         if (client.getIdClient() != null) {
             throw new IllegalArgumentException(
@@ -27,25 +31,32 @@ public class ClientServiceImpl implements IClientService {
 
         validerClient(client);
 
-        return clientRepository.save(client);
+        return clientMapper.toDTO(clientRepository.save(client));
     }
 
     @Override
-    public Client findById(Long id) {
+    public ClientDTO findById(Long id) {
+        return clientMapper.toDTO(findEntityById(id));
+    }
+
+    private Client findEntityById(Long id) {
         return clientRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Client", id));
     }
 
     @Override
-    public List<Client> findAll() {
-        return clientRepository.findAll();
+    public List<ClientDTO> findAll() {
+        return clientRepository.findAll().stream()
+                .map(clientMapper::toDTO)
+                .toList();
     }
 
     @Override
-    public Client update(Long id, Client client) {
+    public ClientDTO update(Long id, ClientDTO dto) {
+        Client client = clientMapper.toEntity(dto);
 
-        Client existant = findById(id);
+        Client existant = findEntityById(id);
 
         validerClient(client);
 
@@ -56,7 +67,7 @@ public class ClientServiceImpl implements IClientService {
         existant.setNumPermis(client.getNumPermis());
         existant.setDateInscription(client.getDateInscription());
 
-        return clientRepository.save(existant);
+        return clientMapper.toDTO(clientRepository.save(existant));
     }
 
     @Override
