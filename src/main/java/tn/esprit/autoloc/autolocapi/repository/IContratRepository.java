@@ -13,4 +13,6 @@ public interface IContratRepository extends JpaRepository<Contrat, Long> {
     List<Contrat> findTop2ByDateSignature(LocalDate dateSignature);
 
     boolean existsByReservationIdReservation(Long idReservation);
+
+    List<Contrat> findByValideTrueAndReservationDateFinBetween(LocalDate debut, LocalDate fin);
 }

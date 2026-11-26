@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import tn.esprit.autoloc.autolocapi.domain.CategorieVehicule;
 import tn.esprit.autoloc.autolocapi.domain.StatutVehicule;
@@ -13,6 +14,7 @@ import tn.esprit.autoloc.autolocapi.repository.IVehiculeRepository;
 import java.math.BigDecimal;
 
 @SpringBootApplication
+@EnableScheduling
 public class AutolocApiApplication {
 
     public static void main(String[] args) {
